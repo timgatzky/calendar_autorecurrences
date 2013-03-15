@@ -73,20 +73,15 @@ class tl_calendar_events_calendar_autorepeat extends Backend
 			return $dc;
 		}
 		
-		// get active record
-		$objRecord = $this->Database->prepare("SELECT * FROM ".$dc->table." WHERE id=?")
-						->limit(1)
-						->execute($dc->id);
-		
 		// return if it's not a recurring event or it is endless or if the end recurrence date is smaler than the start date
-		if($objRecord->recurring < 1 || $objRecord->recurrences < 1 || $objRecord->repeatEndOverride < $objRecord->startDate)
+		if(strlen($dc->activeRecord->repeatEndOverride) < 1 || $dc->activeRecord->recurring < 1 || $dc->activeRecord->repeatEndOverride < $dc->activeRecord->startDate)
 		{
 			return $dc;
 		}
 			
-		$intStart = $objRecord->startDate;
-		$intEnd = $objRecord->repeatEndOverride;
-		$arrRange = deserialize($objRecord->repeatEach);
+		$intStart = $dc->activeRecord->startDate;
+		$intEnd = $dc->activeRecord->repeatEndOverride;
+		$arrRange = deserialize($dc->activeRecord->repeatEach);
 		$unit = $arrRange['unit'];
 		$arg = $arrRange['value'];
 
@@ -114,9 +109,10 @@ class tl_calendar_events_calendar_autorepeat extends Backend
 		}
 		else{}
 		
+		
 		// update record
 		$arrSet['recurrences'] = $intRepeats;
-		$arrSet['repeatEnd'] = $objRecord->repeatEndOverride;
+		$arrSet['repeatEnd'] = $dc->activeRecord->repeatEndOverride;
 		$this->Database->prepare("UPDATE tl_calendar_events %s WHERE id=?")->set($arrSet)->execute($dc->id);
 		
 	}
