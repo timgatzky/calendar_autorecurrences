@@ -12,5 +12,5 @@
 -- 
 
 CREATE TABLE `tl_calendar_events` (
-  `repeatEndOverride` int(10) unsigned NOT NULL default '0'
+  `repeatEndOverride` varchar(10) NOT NULL default ''
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
